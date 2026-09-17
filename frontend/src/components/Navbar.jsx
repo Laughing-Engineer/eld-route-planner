@@ -1,0 +1,87 @@
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Truck, Map, History, FileText, Activity, Shield } from 'lucide-react';
+import api from '../services/api';
+
+export default function Navbar() {
+  const location = useLocation();
+  const [health, setHealth] = useState(null);
+
+  useEffect(() => {
+    api.getHealth()
+      .then(data => setHealth(data))
+      .catch(() => setHealth({ status: 'offline' }));
+  }, []);
+
+  const navLinks = [
+    { name: 'Plan Trip', path: '/planner', icon: Map },
+    { name: 'Saved Trips', path: '/history', icon: History },
+    { name: 'HOS Rules & Docs', path: '/docs', icon: FileText },
+  ];
+
+  return (
+    <nav className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          {/* Logo & Title */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="bg-blue-600 p-2 rounded-lg text-white group-hover:bg-blue-500 transition shadow-sm">
+              <Truck className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-black text-lg tracking-tight block leading-none">
+                ELD ROUTE PLANNER
+              </span>
+              <span className="text-[10px] text-blue-400 font-mono font-medium tracking-wider uppercase">
+                FMCSA Hours of Service Engine
+              </span>
+            </div>
+          </Link>
+
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center gap-1">
+            {navLinks.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname.startsWith(item.path);
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition ${
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* API & DB Status Pill */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 text-xs bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700">
+              <span className={`w-2 h-2 rounded-full ${
+                health?.status === 'healthy' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+              }`} />
+              <span className="text-slate-300 text-[11px] font-mono">
+                {health?.status === 'healthy' 
+                  ? (health.mongodb_connected ? 'API + Atlas Online' : 'API Online') 
+                  : 'Connecting...'}
+              </span>
+            </div>
+            <Link
+              to="/planner"
+              className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded-md shadow transition flex items-center gap-1.5"
+            >
+              <Truck className="w-3.5 h-3.5" />
+              <span>New Trip</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
