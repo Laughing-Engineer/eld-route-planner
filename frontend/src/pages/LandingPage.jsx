@@ -140,7 +140,7 @@ export default function LandingPage() {
           Ready to plan an HOS-compliant route?
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 mb-8 max-w-lg mx-auto">
-          Test out short hauls, cross-country trips, and cycle violation alerts with one-click presets.
+          Plan any regional or cross-country route with automated HOS compliance, rest break scheduling, and official driver log generation.
         </p>
         <Link
           to="/planner"

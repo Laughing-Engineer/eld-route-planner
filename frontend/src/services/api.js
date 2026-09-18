@@ -61,6 +61,20 @@ export const api = {
     return response.data;
   },
 
+  // Location suggestions autocomplete
+  getLocationSuggestions: async (query) => {
+    if (!query || query.trim().length < 2) return [];
+    try {
+      const response = await apiClient.get('/locations/suggest/', {
+        params: { q: query.trim() },
+      });
+      return response.data;
+    } catch (err) {
+      console.warn('Failed to fetch location suggestions:', err);
+      return [];
+    }
+  },
+
   // System Health
   getHealth: async () => {
     const response = await apiClient.get('/health/');

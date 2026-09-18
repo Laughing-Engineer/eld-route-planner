@@ -8,7 +8,8 @@ from .views import (
     TripLogsView,
     GeocodeView,
     CalculateRouteView,
-    HealthCheckView
+    HealthCheckView,
+    LocationSuggestView
 )
 
 urlpatterns = [
@@ -19,6 +20,7 @@ urlpatterns = [
     path('trips/<str:trip_id>/schedule/', TripScheduleView.as_view(), name='trip-schedule'),
     path('trips/<str:trip_id>/logs/', TripLogsView.as_view(), name='trip-logs'),
     path('geocode/', GeocodeView.as_view(), name='geocode'),
+    path('locations/suggest/', LocationSuggestView.as_view(), name='location-suggest'),
     path('routes/calculate/', CalculateRouteView.as_view(), name='calculate-route'),
     path('health/', HealthCheckView.as_view(), name='health-check'),
 ]

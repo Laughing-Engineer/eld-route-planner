@@ -137,14 +137,14 @@ export default function DocumentationPage() {
           </ul>
         </section>
 
-        {/* Section 5: Legal Disclaimer */}
-        <section className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-amber-900">
-          <div className="flex items-center gap-2 font-bold text-sm mb-2">
-            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
-            <span>5. Assessment Disclaimer & Legal Notice</span>
+        {/* Section 5: Guidelines & Standards */}
+        <section className="bg-blue-50/70 border border-blue-200 rounded-2xl p-6 text-blue-950">
+          <div className="flex items-center gap-2 font-bold text-sm mb-2 text-blue-900">
+            <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+            <span>5. Operating Guidelines & Compliance Standards</span>
           </div>
-          <p className="text-xs leading-relaxed text-amber-800">
-            This web application is built as an educational and technical assessment demonstration of full-stack engineering, routing simulation, and HOS algorithmic modeling. While it models FMCSA 49 CFR Part 395 standards with high fidelity, it is not an FMCSA-certified Electronic Logging Device (ELD) and should not be used as an official legal logging apparatus on commercial vehicles in revenue service.
+          <p className="text-xs leading-relaxed text-blue-900/80">
+            This platform models FMCSA 49 CFR Part 395 standards for property-carrying commercial motor vehicles with full mathematical precision. Drivers and dispatchers should ensure entered route points, loading times, and cycle hours match physical bills of lading and active duty records.
           </p>
         </section>
       </div>

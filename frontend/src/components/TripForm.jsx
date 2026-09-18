@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { 
   MapPin, Clock, Truck, User, Building, ShieldCheck, 
-  ChevronDown, ChevronUp, Sparkles, RotateCcw, AlertCircle, Info 
+  ChevronDown, ChevronUp, RotateCcw, AlertCircle, Info 
 } from 'lucide-react';
 import AssumptionsModal from './AssumptionsModal';
+import LocationAutocomplete from './LocationAutocomplete';
 
 export default function TripForm({ onSubmit, isLoading }) {
   const [formData, setFormData] = useState({
-    current_location: 'Chicago, IL',
-    pickup_location: 'Chicago, IL',
-    dropoff_location: 'Los Angeles, CA',
-    current_cycle_used: 15.0,
+    current_location: '',
+    pickup_location: '',
+    dropoff_location: '',
+    current_cycle_used: 10.0,
     driver_name: 'John Doe',
     co_driver_name: '',
     carrier_name: 'Apex Logistics Inc.',
@@ -38,34 +39,6 @@ export default function TripForm({ onSubmit, isLoading }) {
     }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
-    }
-  };
-
-  const handleQuickFill = (preset) => {
-    if (preset === 'short') {
-      setFormData(prev => ({
-        ...prev,
-        current_location: 'Chicago, IL',
-        pickup_location: 'Chicago, IL',
-        dropoff_location: 'Milwaukee, WI',
-        current_cycle_used: 12.0
-      }));
-    } else if (preset === 'crosscountry') {
-      setFormData(prev => ({
-        ...prev,
-        current_location: 'Chicago, IL',
-        pickup_location: 'Indianapolis, IN',
-        dropoff_location: 'Los Angeles, CA',
-        current_cycle_used: 18.0
-      }));
-    } else if (preset === 'violation') {
-      setFormData(prev => ({
-        ...prev,
-        current_location: 'Dallas, TX',
-        pickup_location: 'Dallas, TX',
-        dropoff_location: 'Atlanta, GA',
-        current_cycle_used: 67.5 // Near 70 hours, trip needs ~15 duty hours -> violation
-      }));
     }
   };
 
@@ -134,114 +107,44 @@ export default function TripForm({ onSubmit, isLoading }) {
         </button>
       </div>
 
-      {/* Quick Fill Presets */}
-      <div className="my-5 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>Assessment Quick-Fill Scenarios:</span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => handleQuickFill('short')}
-            className="text-xs bg-white hover:bg-slate-100 text-slate-700 font-medium px-3 py-1.5 rounded-lg border border-slate-300 shadow-xs transition"
-          >
-            1. Short Haul (Chicago &rarr; Milwaukee)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickFill('crosscountry')}
-            className="text-xs bg-white hover:bg-slate-100 text-slate-700 font-medium px-3 py-1.5 rounded-lg border border-slate-300 shadow-xs transition"
-          >
-            2. Long Haul Multi-Day (Chicago &rarr; Los Angeles)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickFill('violation')}
-            className="text-xs bg-white hover:bg-slate-100 text-red-700 font-medium px-3 py-1.5 rounded-lg border border-red-200 shadow-xs transition"
-          >
-            3. Cycle Violation Test (Near 70h Exhaustion)
-          </button>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Core Required Inputs */}
+      <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+        {/* Core Required Inputs with Search Suggestions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Current Location */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              1. Current Location <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                <MapPin className="w-4 h-4 text-blue-600" />
-              </div>
-              <input
-                type="text"
-                name="current_location"
-                value={formData.current_location}
-                onChange={handleChange}
-                placeholder="e.g. Chicago, IL"
-                className={`w-full pl-9 pr-3 py-2 text-sm rounded-lg border ${
-                  errors.current_location ? 'border-red-500 focus:ring-red-400' : 'border-slate-300 focus:ring-blue-500'
-                } focus:outline-none focus:ring-2 transition`}
-              />
-            </div>
-            {errors.current_location && (
-              <p className="text-red-500 text-[11px] mt-1">{errors.current_location}</p>
-            )}
-          </div>
+          <LocationAutocomplete
+            label="1. Current Location"
+            name="current_location"
+            value={formData.current_location}
+            onChange={handleChange}
+            placeholder="e.g. Dallas, TX or California"
+            error={errors.current_location}
+            iconColor="text-blue-600"
+            required
+          />
 
           {/* Pickup Location */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              2. Pickup Location <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                <MapPin className="w-4 h-4 text-emerald-600" />
-              </div>
-              <input
-                type="text"
-                name="pickup_location"
-                value={formData.pickup_location}
-                onChange={handleChange}
-                placeholder="e.g. Chicago, IL or Shipper City"
-                className={`w-full pl-9 pr-3 py-2 text-sm rounded-lg border ${
-                  errors.pickup_location ? 'border-red-500 focus:ring-red-400' : 'border-slate-300 focus:ring-blue-500'
-                } focus:outline-none focus:ring-2 transition`}
-              />
-            </div>
-            {errors.pickup_location && (
-              <p className="text-red-500 text-[11px] mt-1">{errors.pickup_location}</p>
-            )}
-          </div>
+          <LocationAutocomplete
+            label="2. Pickup Location"
+            name="pickup_location"
+            value={formData.pickup_location}
+            onChange={handleChange}
+            placeholder="e.g. Chicago, IL or Shipper City"
+            error={errors.pickup_location}
+            iconColor="text-emerald-600"
+            required
+          />
 
           {/* Drop-off Location */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              3. Drop-off Location <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                <MapPin className="w-4 h-4 text-rose-600" />
-              </div>
-              <input
-                type="text"
-                name="dropoff_location"
-                value={formData.dropoff_location}
-                onChange={handleChange}
-                placeholder="e.g. Los Angeles, CA"
-                className={`w-full pl-9 pr-3 py-2 text-sm rounded-lg border ${
-                  errors.dropoff_location ? 'border-red-500 focus:ring-red-400' : 'border-slate-300 focus:ring-blue-500'
-                } focus:outline-none focus:ring-2 transition`}
-              />
-            </div>
-            {errors.dropoff_location && (
-              <p className="text-red-500 text-[11px] mt-1">{errors.dropoff_location}</p>
-            )}
-          </div>
+          <LocationAutocomplete
+            label="3. Drop-off Location"
+            name="dropoff_location"
+            value={formData.dropoff_location}
+            onChange={handleChange}
+            placeholder="e.g. Los Angeles, CA or Delivery City"
+            error={errors.dropoff_location}
+            iconColor="text-rose-600"
+            required
+          />
         </div>
 
         {/* Cycle Hours Input + Live Gauge */}

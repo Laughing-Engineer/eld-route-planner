@@ -11,7 +11,7 @@ from .serializers import (
     RouteCalculateRequestSerializer
 )
 from .models import Trip, MEMORY_TRIPS
-from services.geocoding_service import geocode_location
+from services.geocoding_service import geocode_location, get_location_suggestions
 from services.route_service import calculate_driving_route
 from services.schedule_service import build_trip_schedule
 from services.log_generator import generate_daily_logs
@@ -333,3 +333,23 @@ class HealthCheckView(APIView):
             "mongodb_connected": getattr(settings, 'MONGO_CONNECTED', False),
             "timestamp": datetime.datetime.utcnow().isoformat()
         }, status=status.HTTP_200_OK)
+
+class LocationSuggestView(APIView):
+    """
+    Real-time search-as-you-type location suggestion endpoint.
+    Supports cities, states, address lookups, and typo tolerance.
+    GET /api/locations/suggest/?q=california&limit=8
+    """
+    def get(self, request):
+        query = request.query_params.get("q", "").strip()
+        try:
+            limit = int(request.query_params.get("limit", 8))
+        except (ValueError, TypeError):
+            limit = 8
+
+        if not query or len(query) < 2:
+            return Response([], status=status.HTTP_200_OK)
+
+        suggestions = get_location_suggestions(query, limit=limit)
+        return Response(suggestions, status=status.HTTP_200_OK)
+

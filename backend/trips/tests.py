@@ -207,3 +207,21 @@ class HOSEngineAndAPITests(TestCase):
         # Delete trip
         del_resp = self.client.delete(f"/api/trips/{trip_id}/")
         self.assertEqual(del_resp.status_code, status.HTTP_200_OK)
+
+    def test_14_location_suggestions_endpoint(self):
+        """14. Test real-time location suggestion endpoint for cities, states, and typos."""
+        # Test state search
+        resp_cali = self.client.get("/api/locations/suggest/?q=california")
+        self.assertEqual(resp_cali.status_code, status.HTTP_200_OK)
+        self.assertTrue(any("California" in item["name"] for item in resp_cali.data))
+
+        # Test typo tolerance ('dellas' -> 'Dallas, TX')
+        resp_dellas = self.client.get("/api/locations/suggest/?q=dellas")
+        self.assertEqual(resp_dellas.status_code, status.HTTP_200_OK)
+        self.assertTrue(any("Dallas" in item["name"] for item in resp_dellas.data))
+
+        # Test city search
+        resp_chicago = self.client.get("/api/locations/suggest/?q=chicago")
+        self.assertEqual(resp_chicago.status_code, status.HTTP_200_OK)
+        self.assertTrue(any("Chicago" in item["name"] for item in resp_chicago.data))
+

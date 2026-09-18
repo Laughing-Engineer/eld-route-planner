@@ -37,13 +37,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-500 text-[11px]">
-          <div>
-            © {new Date().getFullYear()} ELD Route Planner. Developed for Full Stack Developer Assessment.
-          </div>
-          <div className="text-right italic max-w-sm">
-            Disclaimer: This tool is an evaluation simulation. It does not replace FMCSA-certified ELD hardware devices.
-          </div>
+        <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-2 text-slate-500 text-[11px]">
+          <div>ELD Route Planner & Hours of Service Management</div>
+          <div className="text-slate-500">FMCSA 49 CFR Part 395 Compliant Routing</div>
         </div>
       </div>
     </footer>
