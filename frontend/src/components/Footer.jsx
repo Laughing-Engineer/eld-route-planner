@@ -1,5 +1,5 @@
 import React from 'react';
-import { Truck, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Truck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
@@ -13,7 +13,7 @@ export default function Footer() {
               <span>ELD Route Planner & HOS Log Generator</span>
             </div>
             <p className="text-slate-400 text-xs leading-relaxed max-w-md">
-              A comprehensive logistics routing and FMCSA compliance platform. Calculates real-world highway routes via OpenStreetMap & OSRM, evaluates 70-hr/8-day property-carrying rules, schedules required breaks and fuel stops, and generates 24-hour Form MCS-59 paper-style ELD driver logs.
+              A practical planning workspace for commercial drivers and dispatch teams. Build realistic highway routes, check Hours of Service limits, schedule required breaks, and generate 24-hour driver logs.
             </p>
           </div>
           <div>

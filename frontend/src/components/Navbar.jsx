@@ -1,26 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Truck, Map, History, FileText, Activity, Shield, Database } from 'lucide-react';
-import api from '../services/api';
-import ConnectionModal from './ConnectionModal';
+import { Truck, Map, History, FileText, Shield } from 'lucide-react';
 
 export default function Navbar() {
   const location = useLocation();
-  const [health, setHealth] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const fetchHealth = useCallback(() => {
-    api.getHealth()
-      .then(data => setHealth(data))
-      .catch((err) => setHealth({ status: 'offline', error: err?.message }));
-  }, []);
-
-  useEffect(() => {
-    fetchHealth();
-    // Poll every 25 seconds to keep connection state reactive
-    const interval = setInterval(fetchHealth, 25000);
-    return () => clearInterval(interval);
-  }, [fetchHealth]);
 
   const navLinks = [
     { name: 'Plan Trip', path: '/planner', icon: Map },
@@ -75,52 +58,40 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* API & DB Status Pill (Interactive Diagnostics Modal Trigger) */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              title="Click to view Backend & MongoDB Atlas connection manager"
-              className="flex items-center gap-1.5 text-xs bg-slate-800/90 hover:bg-slate-750 px-3 py-1 rounded-full border border-slate-700 hover:border-slate-600 transition cursor-pointer group"
-            >
-              <span
-                className={`w-2 h-2 rounded-full shrink-0 ${
-                  health === null
-                    ? 'bg-amber-400 animate-pulse'
-                    : health.status === 'offline'
-                    ? 'bg-rose-500'
-                    : health.mongodb_connected
-                    ? 'bg-emerald-400 animate-pulse'
-                    : 'bg-amber-400'
-                }`}
-              />
-              <span className="text-slate-300 group-hover:text-white text-[11px] font-mono transition">
-                {health === null
-                  ? 'Connecting...'
-                  : health.status === 'offline'
-                  ? 'API Offline (Fix)'
-                  : health.mongodb_connected
-                  ? 'Atlas DB Online'
-                  : 'API Online (DB Unset)'}
-              </span>
-            </button>
             <Link
               to="/planner"
-              className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded-md shadow transition flex items-center gap-1.5"
+              className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3.5 py-2 rounded-md shadow transition flex items-center gap-1.5"
             >
               <Truck className="w-3.5 h-3.5" />
-              <span>New Trip</span>
+              <span>Plan a trip</span>
             </Link>
           </div>
         </div>
-      </div>
+        <div className="flex md:hidden gap-1 overflow-x-auto border-t border-slate-800 py-2 scrollbar-none">
+          {navLinks.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.path.includes('tab=compliance')
+              ? location.pathname === '/docs' && location.search.includes('tab=compliance')
+              : item.path.includes('tab=rules')
+                ? location.pathname === '/docs' && !location.search.includes('tab=compliance')
+                : location.pathname.startsWith(item.path);
 
-      {/* Connection Manager Modal */}
-      <ConnectionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        health={health}
-        onRefresh={fetchHealth}
-      />
+            return (
+              <Link
+                key={item.name}
+                to={item.path}
+                className={`flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium ${
+                  isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </nav>
   );
 }

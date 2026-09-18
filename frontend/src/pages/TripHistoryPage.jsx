@@ -56,7 +56,7 @@ export default function TripHistoryPage() {
             <span>Saved Trips & Trip History</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Persisted trip records, routing calculations, and generated ELD daily logs from MongoDB Atlas.
+            Review planned routes, compliance results, and generated driver logs in one place.
           </p>
         </div>
 

@@ -53,7 +53,7 @@ export default function LandingPage() {
             Engineered for Commercial Motor Carriers
           </h2>
           <p className="text-sm text-slate-500 mt-2 max-w-xl mx-auto">
-            All core FMCSA property-carrying CMV regulations strictly calculated with real-world road networks and MongoDB persistence.
+            Plan the road ahead with route intelligence, Hours of Service guardrails, and clear driver-ready records.
           </p>
         </div>
 
