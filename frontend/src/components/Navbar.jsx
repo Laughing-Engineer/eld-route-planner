@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Truck, Map, History, FileText, Activity, Shield } from 'lucide-react';
+import { Truck, Map, History, FileText, Activity, Shield, Database } from 'lucide-react';
 import api from '../services/api';
+import ConnectionModal from './ConnectionModal';
 
 export default function Navbar() {
   const location = useLocation();
   const [health, setHealth] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
+  const fetchHealth = useCallback(() => {
     api.getHealth()
       .then(data => setHealth(data))
-      .catch(() => setHealth({ status: 'offline' }));
+      .catch((err) => setHealth({ status: 'offline', error: err?.message }));
   }, []);
+
+  useEffect(() => {
+    fetchHealth();
+    // Poll every 25 seconds to keep connection state reactive
+    const interval = setInterval(fetchHealth, 25000);
+    return () => clearInterval(interval);
+  }, [fetchHealth]);
 
   const navLinks = [
     { name: 'Plan Trip', path: '/planner', icon: Map },
@@ -66,18 +75,34 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* API & DB Status Pill */}
+          {/* API & DB Status Pill (Interactive Diagnostics Modal Trigger) */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700">
-              <span className={`w-2 h-2 rounded-full ${
-                health?.status === 'healthy' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
-              }`} />
-              <span className="text-slate-300 text-[11px] font-mono">
-                {health?.status === 'healthy' 
-                  ? (health.mongodb_connected ? 'API + Atlas Online' : 'API Online') 
-                  : 'Connecting...'}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              title="Click to view Backend & MongoDB Atlas connection manager"
+              className="flex items-center gap-1.5 text-xs bg-slate-800/90 hover:bg-slate-750 px-3 py-1 rounded-full border border-slate-700 hover:border-slate-600 transition cursor-pointer group"
+            >
+              <span
+                className={`w-2 h-2 rounded-full shrink-0 ${
+                  health === null
+                    ? 'bg-amber-400 animate-pulse'
+                    : health.status === 'offline'
+                    ? 'bg-rose-500'
+                    : health.mongodb_connected
+                    ? 'bg-emerald-400 animate-pulse'
+                    : 'bg-amber-400'
+                }`}
+              />
+              <span className="text-slate-300 group-hover:text-white text-[11px] font-mono transition">
+                {health === null
+                  ? 'Connecting...'
+                  : health.status === 'offline'
+                  ? 'API Offline (Fix)'
+                  : health.mongodb_connected
+                  ? 'Atlas DB Online'
+                  : 'API Online (DB Unset)'}
               </span>
-            </div>
+            </button>
             <Link
               to="/planner"
               className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded-md shadow transition flex items-center gap-1.5"
@@ -88,6 +113,14 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Connection Manager Modal */}
+      <ConnectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        health={health}
+        onRefresh={fetchHealth}
+      />
     </nav>
   );
 }

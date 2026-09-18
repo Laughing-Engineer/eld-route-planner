@@ -324,13 +324,33 @@ class CalculateRouteView(APIView):
         return Response(route, status=status.HTTP_200_OK)
 
 class HealthCheckView(APIView):
-    """Health status endpoint."""
+    """Health status endpoint with live MongoDB Atlas diagnostic check."""
     def get(self, request):
+        mongodb_connected = False
+        mongodb_status = "not_configured"
+        mongodb_message = "MONGODB_URI is not set. Utilizing in-memory fallback persistence."
+
+        uri = getattr(settings, 'MONGODB_URI', '')
+        if uri:
+            try:
+                import pymongo
+                client = pymongo.MongoClient(uri, serverSelectionTimeoutMS=2000)
+                client.admin.command('ping')
+                mongodb_connected = True
+                mongodb_status = "connected"
+                mongodb_message = "Successfully connected to MongoDB Atlas."
+            except Exception as e:
+                mongodb_connected = False
+                mongodb_status = "error"
+                mongodb_message = f"Connection failed: {str(e)}"
+
         return Response({
             "status": "healthy",
             "service": "ELD Route Planner & HOS Log Generator API",
             "version": "1.0.0",
-            "mongodb_connected": getattr(settings, 'MONGO_CONNECTED', False),
+            "mongodb_connected": mongodb_connected,
+            "mongodb_status": mongodb_status,
+            "mongodb_message": mongodb_message,
             "timestamp": datetime.datetime.utcnow().isoformat()
         }, status=status.HTTP_200_OK)
 
