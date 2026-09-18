@@ -11,7 +11,7 @@ export default function TripForm({ onSubmit, isLoading }) {
     current_location: '',
     pickup_location: '',
     dropoff_location: '',
-    current_cycle_used: 10.0,
+    current_cycle_used: '10.0',
     driver_name: 'John Doe',
     co_driver_name: '',
     carrier_name: 'Apex Logistics Inc.',
@@ -21,8 +21,8 @@ export default function TripForm({ onSubmit, isLoading }) {
     trailer_number: 'TRL-4410',
     shipping_doc_number: 'BOL-98231',
     start_datetime: '',
-    average_truck_speed: 55.0,
-    fuel_tank_range_miles: 1000.0
+    average_truck_speed: '55.0',
+    fuel_tank_range_miles: '1000.0'
   });
 
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -33,9 +33,7 @@ export default function TripForm({ onSubmit, isLoading }) {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'current_cycle_used' || name === 'average_truck_speed' || name === 'fuel_tank_range_miles'
-        ? parseFloat(value) || 0
-        : value
+      [name]: value
     }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
@@ -47,7 +45,7 @@ export default function TripForm({ onSubmit, isLoading }) {
       current_location: '',
       pickup_location: '',
       dropoff_location: '',
-      current_cycle_used: 0.0,
+      current_cycle_used: '',
       driver_name: 'John Doe',
       co_driver_name: '',
       carrier_name: 'Apex Logistics Inc.',
@@ -57,8 +55,8 @@ export default function TripForm({ onSubmit, isLoading }) {
       trailer_number: 'TRL-4410',
       shipping_doc_number: 'BOL-98231',
       start_datetime: '',
-      average_truck_speed: 55.0,
-      fuel_tank_range_miles: 1000.0
+      average_truck_speed: '55.0',
+      fuel_tank_range_miles: '1000.0'
     });
     setErrors({});
   };
@@ -70,7 +68,9 @@ export default function TripForm({ onSubmit, isLoading }) {
     if (!formData.current_location.trim()) newErrors.current_location = 'Current location is required.';
     if (!formData.pickup_location.trim()) newErrors.pickup_location = 'Pickup location is required.';
     if (!formData.dropoff_location.trim()) newErrors.dropoff_location = 'Drop-off location is required.';
-    if (formData.current_cycle_used < 0 || formData.current_cycle_used > 70) {
+    
+    const cycleVal = parseFloat(formData.current_cycle_used);
+    if (formData.current_cycle_used === '' || isNaN(cycleVal) || cycleVal < 0 || cycleVal > 70) {
       newErrors.current_cycle_used = 'Cycle used must be between 0 and 70 hours.';
     }
 
@@ -79,10 +79,16 @@ export default function TripForm({ onSubmit, isLoading }) {
       return;
     }
 
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      current_cycle_used: parseFloat(formData.current_cycle_used) || 0,
+      average_truck_speed: parseFloat(formData.average_truck_speed) || 55.0,
+      fuel_tank_range_miles: parseFloat(formData.fuel_tank_range_miles) || 1000.0
+    });
   };
 
-  const remainingCycleHours = Math.max(0, (70.0 - formData.current_cycle_used)).toFixed(1);
+  const usedHours = formData.current_cycle_used === '' ? 0 : (parseFloat(formData.current_cycle_used) || 0);
+  const remainingCycleHours = Math.max(0, (70.0 - usedHours)).toFixed(1);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
@@ -166,6 +172,7 @@ export default function TripForm({ onSubmit, isLoading }) {
                   min="0"
                   max="70"
                   step="0.5"
+                  placeholder="0.0"
                   className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -182,7 +189,9 @@ export default function TripForm({ onSubmit, isLoading }) {
               <div className="h-8 w-px bg-slate-200" />
               <div className="text-center">
                 <span className="block text-[10px] uppercase font-bold text-slate-400">Used</span>
-                <span className="text-base font-bold text-blue-600">{formData.current_cycle_used} h</span>
+                <span className="text-base font-bold text-blue-600">
+                  {formData.current_cycle_used === '' ? '0.0' : formData.current_cycle_used} h
+                </span>
               </div>
               <div className="h-8 w-px bg-slate-200" />
               <div className="text-center">
