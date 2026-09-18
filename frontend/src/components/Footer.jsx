@@ -21,8 +21,9 @@ export default function Footer() {
             <ul className="space-y-2">
               <li><Link to="/planner" className="hover:text-blue-400 transition">Trip Planner</Link></li>
               <li><Link to="/history" className="hover:text-blue-400 transition">Saved Trips</Link></li>
-              <li><Link to="/docs" className="hover:text-blue-400 transition">HOS Calculation Logic</Link></li>
-              <li><Link to="/docs#assumptions" className="hover:text-blue-400 transition">Assumptions & Rules</Link></li>
+              <li><Link to="/docs?tab=rules" className="hover:text-blue-400 transition">Rules & Regulations</Link></li>
+              <li><Link to="/docs?tab=compliance" className="hover:text-blue-400 transition">Compliance Standards</Link></li>
+              <li><Link to="/docs?tab=statuses" className="hover:text-blue-400 transition">ELD Duty Statuses & Logs</Link></li>
             </ul>
           </div>
           <div>

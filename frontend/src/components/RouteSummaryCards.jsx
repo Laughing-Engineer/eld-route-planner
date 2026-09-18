@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Clock, ShieldCheck, AlertTriangle, Fuel, Bed, BatteryCharging } from 'lucide-react';
 
-export default function RouteSummaryCards({ summary, compliance }) {
+export default function RouteSummaryCards({ summary, compliance, onSelectTab }) {
   if (!summary) return null;
 
   const isCompliant = compliance?.is_compliant !== false;
@@ -9,7 +9,10 @@ export default function RouteSummaryCards({ summary, compliance }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
       {/* Distance */}
-      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+      <div 
+        onClick={() => onSelectTab && onSelectTab('map')}
+        className={`bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm ${onSelectTab ? 'cursor-pointer hover:border-blue-300 transition' : ''}`}
+      >
         <div className="flex items-center justify-between text-slate-500 mb-1">
           <span className="text-xs font-semibold uppercase tracking-wider">Distance</span>
           <Route className="w-4 h-4 text-blue-600" />
@@ -21,7 +24,10 @@ export default function RouteSummaryCards({ summary, compliance }) {
       </div>
 
       {/* Driving Hours */}
-      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+      <div 
+        onClick={() => onSelectTab && onSelectTab('schedule')}
+        className={`bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm ${onSelectTab ? 'cursor-pointer hover:border-blue-300 transition' : ''}`}
+      >
         <div className="flex items-center justify-between text-slate-500 mb-1">
           <span className="text-xs font-semibold uppercase tracking-wider">Drive Time</span>
           <Clock className="w-4 h-4 text-blue-600" />
@@ -33,7 +39,10 @@ export default function RouteSummaryCards({ summary, compliance }) {
       </div>
 
       {/* Total Duration */}
-      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+      <div 
+        onClick={() => onSelectTab && onSelectTab('schedule')}
+        className={`bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm ${onSelectTab ? 'cursor-pointer hover:border-blue-300 transition' : ''}`}
+      >
         <div className="flex items-center justify-between text-slate-500 mb-1">
           <span className="text-xs font-semibold uppercase tracking-wider">Total Trip</span>
           <Clock className="w-4 h-4 text-slate-600" />
@@ -45,7 +54,10 @@ export default function RouteSummaryCards({ summary, compliance }) {
       </div>
 
       {/* Fuel Stops */}
-      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+      <div 
+        onClick={() => onSelectTab && onSelectTab('map')}
+        className={`bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm ${onSelectTab ? 'cursor-pointer hover:border-blue-300 transition' : ''}`}
+      >
         <div className="flex items-center justify-between text-slate-500 mb-1">
           <span className="text-xs font-semibold uppercase tracking-wider">Fuel Stops</span>
           <Fuel className="w-4 h-4 text-amber-600" />
@@ -57,7 +69,10 @@ export default function RouteSummaryCards({ summary, compliance }) {
       </div>
 
       {/* Rest Stops */}
-      <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+      <div 
+        onClick={() => onSelectTab && onSelectTab('schedule')}
+        className={`bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm ${onSelectTab ? 'cursor-pointer hover:border-blue-300 transition' : ''}`}
+      >
         <div className="flex items-center justify-between text-slate-500 mb-1">
           <span className="text-xs font-semibold uppercase tracking-wider">Rest Stops</span>
           <Bed className="w-4 h-4 text-purple-600" />
@@ -69,9 +84,12 @@ export default function RouteSummaryCards({ summary, compliance }) {
       </div>
 
       {/* Compliance Badge */}
-      <div className={`p-3.5 rounded-xl border shadow-sm ${
-        isCompliant ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-red-50 border-red-200 text-red-900'
-      }`}>
+      <div 
+        onClick={() => onSelectTab && onSelectTab('audit')}
+        className={`p-3.5 rounded-xl border shadow-sm ${onSelectTab ? 'cursor-pointer hover:shadow-md transition' : ''} ${
+          isCompliant ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-red-50 border-red-200 text-red-900'
+        }`}
+      >
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs font-bold uppercase tracking-wider">HOS Status</span>
           {isCompliant ? <ShieldCheck className="w-4 h-4 text-emerald-600" /> : <AlertTriangle className="w-4 h-4 text-red-600" />}

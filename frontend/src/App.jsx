@@ -25,6 +25,10 @@ export default function App() {
             <Route path="/logs/:tripId" element={<ELDLogsPage />} />
             <Route path="/history" element={<TripHistoryPage />} />
             <Route path="/docs" element={<DocumentationPage />} />
+            <Route path="/compliance" element={<Navigate to="/docs?tab=compliance" replace />} />
+            <Route path="/rules" element={<Navigate to="/docs?tab=rules" replace />} />
+            <Route path="/regulations" element={<Navigate to="/docs?tab=rules" replace />} />
+            <Route path="/assumptions" element={<Navigate to="/docs?tab=assumptions" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

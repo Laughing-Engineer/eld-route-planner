@@ -16,7 +16,8 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Plan Trip', path: '/planner', icon: Map },
     { name: 'Saved Trips', path: '/history', icon: History },
-    { name: 'HOS Rules & Docs', path: '/docs', icon: FileText },
+    { name: 'Rules & Regulations', path: '/docs?tab=rules', icon: FileText },
+    { name: 'Compliance', path: '/docs?tab=compliance', icon: Shield },
   ];
 
   return (
@@ -42,7 +43,12 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname.startsWith(item.path);
+              const isActive = item.path.includes('tab=compliance')
+                ? location.pathname === '/docs' && location.search.includes('tab=compliance')
+                : item.path.includes('tab=rules')
+                  ? location.pathname === '/docs' && !location.search.includes('tab=compliance')
+                  : location.pathname.startsWith(item.path);
+
               return (
                 <Link
                   key={item.name}

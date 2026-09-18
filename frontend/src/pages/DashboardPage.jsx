@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import RouteSummaryCards from '../components/RouteSummaryCards';
 import MapComponent from '../components/MapComponent';
@@ -12,10 +12,18 @@ import {
 
 export default function DashboardPage() {
   const { tripId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlTab = searchParams.get('tab');
+  const initialTab = (urlTab === 'compliance' || urlTab === 'audit') ? 'audit' : (urlTab || 'map');
   const [trip, setTrip] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('map');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedDayIdx, setSelectedDayIdx] = useState(0);
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setSearchParams({ tab: tabId });
+  };
 
   useEffect(() => {
     if (tripId) {
@@ -111,13 +119,13 @@ export default function DashboardPage() {
       )}
 
       {/* Route KPI Summary Cards */}
-      <RouteSummaryCards summary={route_summary} compliance={compliance} />
+      <RouteSummaryCards summary={route_summary} compliance={compliance} onSelectTab={handleTabChange} />
 
       {/* Navigation Tabs */}
-      <div className="border-b border-slate-200 mb-6">
-        <div className="flex space-x-8">
+      <div className="border-b border-slate-200 mb-6 overflow-x-auto">
+        <div className="flex space-x-4 sm:space-x-8 min-w-max">
           <button
-            onClick={() => setActiveTab('map')}
+            onClick={() => handleTabChange('map')}
             className={`pb-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 ${
               activeTab === 'map'
                 ? 'border-blue-600 text-blue-600'
@@ -129,7 +137,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            onClick={() => setActiveTab('schedule')}
+            onClick={() => handleTabChange('schedule')}
             className={`pb-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 ${
               activeTab === 'schedule'
                 ? 'border-blue-600 text-blue-600'
@@ -141,7 +149,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            onClick={() => setActiveTab('logs')}
+            onClick={() => handleTabChange('logs')}
             className={`pb-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 ${
               activeTab === 'logs'
                 ? 'border-blue-600 text-blue-600'
@@ -153,7 +161,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            onClick={() => setActiveTab('audit')}
+            onClick={() => handleTabChange('audit')}
             className={`pb-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 ${
               activeTab === 'audit'
                 ? 'border-blue-600 text-blue-600'
