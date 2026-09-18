@@ -90,8 +90,8 @@ This guide provides step-by-step instructions for deploying the **ELD Route Plan
    - **Install Command**: `npm install`
 4. **Add Frontend Environment Variables**:
    - In **Environment Variables**:
-     - Key: `VITE_API_BASE_URL`
-     - Value: `https://eld-route-planner-api.onrender.com/api` (use your actual Render backend URL)
+   - Key: `VITE_API_BASE_URL`
+   - Value: `https://eld-route-planner-api-fga1.onrender.com/api`
 5. **Single Page Application Routing (`vercel.json`)**:
    - The repository already includes `frontend/vercel.json`:
      ```json
@@ -116,7 +116,7 @@ This guide provides step-by-step instructions for deploying the **ELD Route Plan
 | `SECRET_KEY` | `django-insecure-prod-key-xyz987` | Django cryptographic signing |
 | `DEBUG` | `False` | Disables debug mode for production security |
 | `ALLOWED_HOSTS` | `.onrender.com,localhost,127.0.0.1` | Allowed HTTP Host headers |
-| `CORS_ALLOWED_ORIGINS` | `https://eld-route-planner.vercel.app` | Cross-Origin Request allowance for Vercel |
+| `CORS_ALLOWED_ORIGINS` | `https://eld-route-planner-pi.vercel.app` | Cross-Origin Request allowance for Vercel; origin only, no `/api` path |
 | `MONGODB_URI` | `mongodb+srv://eld_admin:<pwd>@cluster0.mongodb.net/eld_planner?...` | MongoDB Atlas database connection string |
 | `NOMINATIM_USER_AGENT`| `ELDRoutePlanner/1.0 (admin@yourdomain.com)` | OpenStreetMap Nominatim compliance |
 | `OSRM_BASE_URL` | `http://router.project-osrm.org` | Open Source Routing Machine endpoint |
@@ -124,7 +124,7 @@ This guide provides step-by-step instructions for deploying the **ELD Route Plan
 ### Frontend (Vercel):
 | Variable | Value / Example | Purpose |
 |:---|:---|:---|
-| `VITE_API_BASE_URL` | `https://eld-route-planner-api.onrender.com/api` | Base URL pointing Axios client to Render backend |
+| `VITE_API_BASE_URL` | `https://eld-route-planner-api-fga1.onrender.com/api` | Base URL pointing Axios client to Render backend |
 
 ---
 

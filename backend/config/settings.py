@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from urllib.parse import urlsplit
 import mongoengine
 from dotenv import load_dotenv
 
@@ -89,6 +90,7 @@ if MONGODB_URI:
             serverSelectionTimeoutMS=3000,
             connect=False
         )
+        MONGO_CLIENT.admin.command('ping')
         MONGO_CONNECTED = True
         print("[MongoDB] Configured connection to MongoDB Atlas.")
     except Exception as e:
@@ -126,7 +128,18 @@ REST_FRAMEWORK = {
 }
 
 # CORS configuration
-CORS_ALLOW_ALL_ORIGINS = True
+cors_origins = []
+for configured_origin in os.getenv('CORS_ALLOWED_ORIGINS', '').split(','):
+    configured_origin = configured_origin.strip()
+    if not configured_origin:
+        continue
+    parsed_origin = urlsplit(configured_origin)
+    if parsed_origin.scheme and parsed_origin.netloc:
+        cors_origins.append(f'{parsed_origin.scheme}://{parsed_origin.netloc}')
+if cors_origins:
+    CORS_ALLOWED_ORIGINS = cors_origins
+else:
+    CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOW_CREDENTIALS = True
 
 # External APIs

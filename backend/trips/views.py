@@ -162,6 +162,12 @@ class TripListView(APIView):
         else:
             results = list(MEMORY_TRIPS.values())
 
+        known_trip_ids = {trip.get("trip_id") for trip in results}
+        results.extend(
+            trip for trip_id, trip in MEMORY_TRIPS.items()
+            if trip_id not in known_trip_ids
+        )
+
         if search_query:
             results = [
                 t for t in results

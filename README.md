@@ -113,6 +113,12 @@ npm run dev
 ```
 Frontend will be available at `http://localhost:5173/`.
 
+Vite selects the API automatically by mode:
+- `npm run dev` uses `http://localhost:8000/api`.
+- `npm run build` uses `https://eld-route-planner-api-fga1.onrender.com/api`.
+
+The production URL remains configured in `frontend/.env.production`; users never need to enter an API URL in the application.
+
 ### 3. Connecting MongoDB Atlas (Optional)
 Create a `.env` file in `backend/` using `.env.example`:
 ```env

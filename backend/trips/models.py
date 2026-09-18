@@ -34,9 +34,12 @@ class TimelineEvent(me.EmbeddedDocument):
     id = me.StringField()
     type = me.StringField(choices=['OFF_DUTY', 'SLEEPER_BERTH', 'DRIVING', 'ON_DUTY_NOT_DRIVING'])
     status_code = me.StringField(choices=['OFF', 'SB', 'D', 'ON'])
+    start = me.StringField()
+    end = me.StringField()
     start_time = me.StringField()
     end_time = me.StringField()
     duration_hours = me.FloatField()
+    location = me.StringField()
     start_location = me.StringField()
     end_location = me.StringField()
     notes = me.StringField()
@@ -120,7 +123,8 @@ class Trip(me.Document):
     meta = {
         'collection': 'trips',
         'ordering': ['-created_at'],
-        'indexes': ['trip_id', 'created_at']
+        'indexes': ['trip_id', 'created_at'],
+        'auto_create_index': False
     }
 
 # Fallback in-memory storage for trips if MongoDB is offline
