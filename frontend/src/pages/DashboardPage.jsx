@@ -7,7 +7,7 @@ import TimelineView from '../components/TimelineView';
 import ELDLogSheet from '../components/ELDLogSheet';
 import { 
   Map, Calendar, FileText, ShieldAlert, ShieldCheck, 
-  Printer, ArrowLeft, Download, ChevronRight, AlertTriangle 
+  Printer, ArrowLeft, Download, ChevronRight, AlertTriangle, CheckCircle2
 } from 'lucide-react';
 
 export default function DashboardPage() {
